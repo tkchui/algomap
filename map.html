@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+<link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.0/mapsjs-ui.css?dp-version=1549984893" />
+<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-core.js"></script>
+<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-service.js"></script>
+<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
+<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
+
+</head>
+<body>
+  <div id="map" style="width: 100%; height: 400px; background: grey" />
+  <script  type="text/javascript" charset="UTF-8" >
+    
+
+/**
+ * Adds markers to the map highlighting the locations of the captials of
+ * France, Italy, Germany, Spain and the United Kingdom.
+ *
+ * @param  {H.Map} map      A HERE Map instance within the application
+ */
+function addMarkersToMap(map) {
+  //var thailandMarker = new H.map.Marker();
+  //map.addObject(thailandMarker);
+
+  var newzeaMarker = new H.map.Marker({lat:41.9, lng: 12.5});
+  map.addObject(romeMarker);
+
+  var berlinMarker = new H.map.Marker({lat:52.5166, lng:13.3833});
+  map.addObject(berlinMarker);
+
+  var madridMarker = new H.map.Marker({lat:40.4, lng: -3.6833});
+  map.addObject(madridMarker);
+
+  var londonMarker = new H.map.Marker({lat:51.5008, lng:-0.1224});
+  map.addObject(londonMarker);
+}
+
+function addPolylineToMap(map, path) {
+    var paths = path.split(',');
+    var lineString = new H.geo.LineString();
+    paths.forEach(l => {
+        lineString.pushPoint(locations[l]);
+    });
+    map.addObject(new H.map.Polyline(
+        lineString, { style: { lineWidth: 6 }}
+    ));
+}
+
+addPolylineToMap(map, urlParams.get('path'))
+
+/**
+ * Boilerplate map initialization code starts below:
+ */
+
+//Step 1: initialize communication with the platform
+var platform = new H.service.Platform({
+    'app_id': 'XYZ9X4SeaJEyhEO4VF75',
+  'app_code': 'uvaBPpNitGbyIzyT-HqkHA',
+  useHTTPS: true
+});
+var pixelRatio = window.devicePixelRatio || 1;
+var defaultLayers = platform.createDefaultLayers({
+  tileSize: pixelRatio === 1 ? 256 : 512,
+  ppi: pixelRatio === 1 ? undefined : 320
+});
+
+//Step 2: initialize a map - this map is centered over Europe
+var map = new H.Map(document.getElementById('map'),
+  defaultLayers.normal.map,{
+  center: {lat:50, lng:5},
+  zoom: 4,
+  pixelRatio: pixelRatio
+});
+
+//Step 3: make the map interactive
+// MapEvents enables the event system
+// Behavior implements default interactions for pan/zoom (also on mobile touch environments)
+var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+
+// Create the default UI components
+var ui = H.ui.UI.createDefault(map, defaultLayers);
+
+// Now use the map as required...
+//addMarkersToMap(map);
+  
+
+// Retrieve the target element for the map:
+var targetElement = document.getElementById('mapContainer');
+
+// Get default map types from the platform object:
+var defaultLayers = platform.createDefaultLayers();
+
+
+// Create the parameters for the geocoding request:
+var geocodingParams = {
+    searchText: 'Thailand'
+  };
+
+// Define a callback function to process the geocoding response:
+var onResult = function(result) {
+  var locations = result.Response.View[0].Result,
+    position,
+    marker;
+  // Add a marker for each location found
+  for (i = 0;  i < locations.length; i++) {
+  position = {
+    lat: locations[i].Location.DisplayPosition.Latitude,
+    lng: locations[i].Location.DisplayPosition.Longitude
+  };
+  console.log(position)
+  marker = new H.map.Marker(position);
+  map.addObject(marker);
+  }
+};
+
+// Get an instance of the geocoding service:
+var geocoder = platform.getGeocodingService();
+
+// Call the geocode method with the geocoding parameters,
+// the callback and an error callback function (called if a
+// communication error occurs):
+geocoder.geocode({searchText:'Thailand'}, onResult, function(e) {
+  alert(e);
+}); 
+geocoder.geocode({searchText:'Malaysia'}, onResult, function(e) {
+  alert(e);
+});  
+geocoder.geocode({searchText:'New Zealand'}, onResult, function(e) {
+  alert(e);
+}); 
+geocoder.geocode({searchText:'Japan'}, onResult, function(e) {
+  alert(e);
+}); 
+geocoder.geocode({searchText:'Australia'}, onResult, function(e) {
+  alert(e);
+}); 
+geocoder.geocode({searchText:'United States'}, onResult, function(e) {
+  alert(e);
+}); 
+geocoder.geocode({searchText:'United Kingdom'}, onResult, function(e) {
+  alert(e);
+}); 
+geocoder.geocode({searchText:'Germany'}, onResult, function(e) {
+  alert(e);
+}); 
+geocoder.geocode({searchText:'Brazil'}, onResult, function(e) {
+  alert(e);
+}); 
+geocoder.geocode({searchText:'Hawaii'}, onResult, function(e) {
+  alert(e);
+}); 
+geocoder.geocode({searchText:'Hong Kong'}, onResult, function(e) {
+  alert(e);
+}); 
+geocoder.geocode({searchText:'Singapore'}, onResult, function(e) {
+  alert(e);
+}); 
+  </script>
+</body>
+</html>
