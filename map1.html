@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.0/mapsjs-ui.css?dp-version=1549984893" />
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-core.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-service.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
+
+</head>
+
+<body>
+    <div id="map" style="width: 100%; height: 400px; background: grey" />
+    <script type="text/javascript" charset="UTF-8">
+
+
+        /**
+         * Adds markers to the map highlighting the locations of the captials of
+         * France, Italy, Germany, Spain and the United Kingdom.
+         *
+         * @param  {H.Map} map      A HERE Map instance within the application
+         */
+        locationsJSON = {};
+
+        var locations = {}
+        locations['Malaysia'] = { lat: 2.7456, lng: 101.7072 }
+        locations['Brazil'] = { lat: -15.8697, lng: -47.9172 }
+        locations['Japan'] = { lat: 35.5494, lng: 139.7798 }
+        locations['Uniteed Kingdom'] = { lat: 51.5048, lng: 0.0495 }
+        locations['United States'] = { lat: 47.7510, lng: -120.7401 }
+        locations['Thailand'] = { lat: 13.6900, lng: 100.7501 }
+        locations['Australia'] = { lat: -35.4735, lng: 149.0124 }
+        locations['New Zealand'] = { lat: -36.8485, lng: 174.7633 }
+        locations['Germany'] = { lat: 52.5200, lng: 13.4049 }
+        locations['Hawaii'] = { lat: 21.3156, lng: -157.8580 }
+        locations['Hong Kong'] = { lat: 22.2855, lng: 114.1576 }
+        locations['Singapore'] = { lat: 1.2903, lng: 103.8519 }
+
+        var urlParams = new URLSearchParams(decodeURIComponent(location.search));
+
+        function addMarkersToMap(map) {
+            for (var l in locations) {
+                map.addObject(new H.map.Marker(locations[l]));
+            }
+        }
+        function addPolylineToMap(map, path) {
+            var paths = path.split(',');
+            var lineString = new H.geo.LineString();
+            paths.forEach(l => {
+                lineString.pushPoint(locations[l]);
+            });
+            map.addObject(new H.map.Polyline(
+                lineString, { style: { lineWidth: 6 } }
+            ));
+        }
+/**
+         * Boilerplate map initialization code starts below:
+         */
+
+        //Step 1: initialize communication with the platform
+        var platform = new H.service.Platform({
+            'app_id': 'XYZ9X4SeaJEyhEO4VF75',
+            'app_code': 'uvaBPpNitGbyIzyT-HqkHA',
+            useHTTPS: true
+        });
+        var pixelRatio = window.devicePixelRatio || 1;
+        var defaultLayers = platform.createDefaultLayers({
+            tileSize: pixelRatio === 1 ? 256 : 512,
+            ppi: pixelRatio === 1 ? undefined : 320
+        });
+
+        //Step 2: initialize a map - this map is centered over Europe
+        var map = new H.Map(document.getElementById('map'),
+            defaultLayers.normal.map, {
+                center: { lat: 50, lng: 5 },
+                zoom: 4,
+                pixelRatio: pixelRatio
+            });
+
+        //Step 3: make the map interactive
+        // MapEvents enables the event system
+        // Behavior implements default interactions for pan/zoom (also on mobile touch environments)
+        var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+
+        // Create the default UI components
+        var ui = H.ui.UI.createDefault(map, defaultLayers);
+
+        // Now use the map as required...
+        addMarkersToMap(map);
+        addPolylineToMap(map, urlParams.get('path'))
+    </script>
+</body>
+
+</html>
